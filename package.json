@@ -1,6 +1,6 @@
 {
 	"version": "1.4.2",
-	"name": "fastsharding",
+	"name": "fast-sharding",
 	"author": "Ch1llDev",
 	"scripts": {
 		"ts": "yarn install typescript --save-dev -g",
