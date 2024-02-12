@@ -1,7 +1,7 @@
 {
 	"version": "1.4.2",
-	"name": "status-sharding",
-	"author": "Digital39999",
+	"name": "fastsharding",
+	"author": "Ch1llDev",
 	"scripts": {
 		"ts": "yarn install typescript --save-dev -g",
 		"init": "yarn install && yarn run build && yarn run start",
@@ -9,9 +9,10 @@
 		"build": "tsc --build",
 		"watch": "tsc --watch"
 	},
-	"repository": "https://github.com/Status-Team/Status-Sharding",
+	"repository": "https://github.com/KingCh1ll/Fast-Sharding",
 	"main": "dist/index.js",
 	"license": "MIT",
+	"engines": { "node": ">=18.4.0" },
 	"keywords": [
 		"discord",
 		"discord.js",
@@ -32,15 +33,10 @@
 		"discord.js-bot-sharding-example"
 	],
 	"devDependencies": {
-		"@types/node": "^20.4.4",
 		"@typescript-eslint/eslint-plugin": "^6.1.0",
 		"@typescript-eslint/parser": "^6.1.0",
 		"discord.js": "^14.11.0",
 		"eslint": "^8.45.0",
 		"typescript": "^5.1.6"
-	},
-	"packageManager": "yarn@3.2.4",
-	"engines": {
-		"node": ">=18.4.0"
 	}
 }
