@@ -30,11 +30,11 @@ class ClusterManager extends events_1.default {
         super();
         this.file = file;
         if (!file)
-            throw new Error('CLIENT_INVALID_OPTION | No File specified.');
+            throw new Error("CLIENT_INVALID_OPTION | No File specified.");
         this.file = path_1.default.isAbsolute(file) ? file : path_1.default.resolve(process.cwd(), file);
         if (!fs_1.default.statSync(this.file)?.isFile())
-            throw new Error('CLIENT_INVALID_OPTION | Provided is file is not type of file.');
-        if (options.mode && options.mode !== 'worker' && options.mode !== 'process')
+            throw new Error("CLIENT_INVALID_OPTION | Provided is file is not type of file.");
+        if (options.mode && options.mode !== "worker" && options.mode !== "process")
             throw new RangeError('CLIENT_INVALID_OPTION | Cluster mode must be "worker" or "process".');
         this.options = {
             ...options,
@@ -43,7 +43,7 @@ class ClusterManager extends events_1.default {
             shardsPerClusters: options.shardsPerClusters === undefined ? -1 : options.shardsPerClusters,
             respawn: options.respawn === undefined ? true : options.respawn,
             heartbeat: shardingUtils_1.ShardingUtils.mergeObjects(options.heartbeat || {}, { maxRestarts: 3, interval: 30000, timeout: 45000, maxMissedHeartbeats: 4 }),
-            mode: options.mode || 'worker',
+            mode: options.mode || "worker",
             shardList: [], clusterList: [],
             spawnOptions: {
                 timeout: options.spawnOptions?.timeout ?? -1,
@@ -54,27 +54,27 @@ class ClusterManager extends events_1.default {
         process.env.CLUSTER_COUNT = String(options.totalClusters);
         process.env.CLUSTER_MANAGER_MODE = options.mode;
         process.env.DISCORD_TOKEN = String(options.token) || undefined;
-        process.env.CLUSTER_QUEUE_MODE = options.queueOptions?.mode ?? 'auto';
+        process.env.CLUSTER_QUEUE_MODE = options.queueOptions?.mode ?? "auto";
         this.ready = false;
-        this.maintenance = '';
+        this.maintenance = "";
         this.clusters = new Map();
         this.promise = new promise_1.PromiseHandler();
         this.broker = new broker_1.IPCBrokerManager(this);
         this.reCluster = new reCluster_1.ReClusterManager(this);
         this.heartbeat = new heartbeat_1.HeartbeatManager(this);
         this.clusterQueue = new queue_1.Queue(this.options.queueOptions || {
-            mode: 'auto', timeout: this.options.spawnOptions.timeout || 30000,
+            mode: "auto", timeout: this.options.spawnOptions.timeout || 30000,
         });
-        this._debug('[ClusterManager] Initialized successfully.');
+        this._debug("[ClusterManager] Initialized successfully.");
     }
     // Spawns multiple internal clusters.
     async spawn() {
         if (this.options.spawnOptions.delay < 8000)
-            process.emitWarning('Spawn Delay is smaller than 8s, this can cause global rate limits on /gateway/bot', {
-                code: 'SHARDING_DELAY',
+            process.emitWarning("Spawn Delay is smaller than 8s, this can cause global rate limits on /gateway/bot", {
+                code: "SHARDING_DELAY",
             });
-        if (this.options.token && this.options.token?.includes('Bot ') || this.options.token?.includes('Bearer '))
-            this.options.token = this.options.token.slice(this.options.token.indexOf(' ') + 1);
+        if (this.options.token && this.options.token?.includes("Bot ") || this.options.token?.includes("Bearer "))
+            this.options.token = this.options.token.slice(this.options.token.indexOf(" ") + 1);
         const cpuCores = os_1.default.cpus().length;
         this.options.totalShards = this.options.totalShards !== -1 ? this.options.totalShards : this.options.token ? await shardingUtils_1.ShardingUtils.getRecommendedShards(this.options.token) || 1 : 1;
         this.options.totalClusters = (this.options.totalClusters === -1) ? (cpuCores > this.options.totalShards ? this.options.totalShards : cpuCores) : this.options.totalClusters;
@@ -84,11 +84,11 @@ class ClusterManager extends events_1.default {
         if (this.options.totalClusters < 1)
             this.options.totalClusters = 1;
         if (this.options.totalClusters > this.options.totalShards)
-            throw new Error('CLIENT_INVALID_OPTION | Total Clusters cannot be more than Total Shards.');
+            throw new Error("CLIENT_INVALID_OPTION | Total Clusters cannot be more than Total Shards.");
         if (this.options.shardsPerClusters > this.options.totalShards)
-            throw new Error('CLIENT_INVALID_OPTION | Shards per Cluster cannot be more than Total Shards.');
+            throw new Error("CLIENT_INVALID_OPTION | Shards per Cluster cannot be more than Total Shards.");
         if (this.options.shardsPerClusters > (this.options.totalShards / this.options.totalClusters))
-            throw new Error('CLIENT_INVALID_OPTION | Shards per Cluster cannot be more than Total Shards divided by Total Clusters.');
+            throw new Error("CLIENT_INVALID_OPTION | Shards per Cluster cannot be more than Total Shards divided by Total Clusters.");
         if (!this.options.shardList?.length)
             this.options.shardList = new Array(this.options.totalShards).fill(0).map((_, i) => i);
         if (this.options.shardsPerClusters)
@@ -98,25 +98,25 @@ class ClusterManager extends events_1.default {
         if (this.options.clusterList.length !== this.options.totalClusters)
             this.options.totalClusters = this.options.clusterList.length;
         if (this.options.totalShards < 1)
-            throw new Error('CLIENT_INVALID_OPTION | Total Shards must be at least 1.');
+            throw new Error("CLIENT_INVALID_OPTION | Total Shards must be at least 1.");
         if (this.options.totalClusters < 1)
-            throw new Error('CLIENT_INVALID_OPTION | Total Clusters must be at least 1.');
+            throw new Error("CLIENT_INVALID_OPTION | Total Clusters must be at least 1.");
         if (this.options.shardsPerClusters < 1)
-            throw new Error('CLIENT_INVALID_OPTION | Shards Per Cluster must be at least 1.');
+            throw new Error("CLIENT_INVALID_OPTION | Shards Per Cluster must be at least 1.");
         if (this.options.totalShards < this.options.shardList.length)
-            throw new Error('CLIENT_INVALID_OPTION | Shard List is bigger than Total Shards.');
+            throw new Error("CLIENT_INVALID_OPTION | Shard List is bigger than Total Shards.");
         if (this.options.totalClusters < this.options.clusterList.length)
-            throw new Error('CLIENT_INVALID_OPTION | Cluster List is bigger than Total Clusters.');
+            throw new Error("CLIENT_INVALID_OPTION | Cluster List is bigger than Total Clusters.");
         if (this.options.shardsPerClusters > this.options.totalShards)
-            throw new Error('CLIENT_INVALID_OPTION | Shards Per Cluster is bigger than Total Shards.');
+            throw new Error("CLIENT_INVALID_OPTION | Shards Per Cluster is bigger than Total Shards.");
         if (this.options.shardList.some((shard) => shard < 0))
-            throw new Error('CLIENT_INVALID_OPTION | Shard List has invalid shards.');
+            throw new Error("CLIENT_INVALID_OPTION | Shard List has invalid shards.");
         if (this.options.clusterList.some((cluster) => cluster < 0))
-            throw new Error('CLIENT_INVALID_OPTION | Cluster List has invalid clusters.');
+            throw new Error("CLIENT_INVALID_OPTION | Cluster List has invalid clusters.");
         if (this.options.shardList.some((shard) => shard < 0))
-            throw new Error('CLIENT_INVALID_OPTION | Shard List has invalid shards.');
+            throw new Error("CLIENT_INVALID_OPTION | Shard List has invalid shards.");
         if (this.options.clusterList.some((cluster) => cluster < 0))
-            throw new Error('CLIENT_INVALID_OPTION | Cluster List has invalid clusters.');
+            throw new Error("CLIENT_INVALID_OPTION | Cluster List has invalid clusters.");
         this._debug(`[ClusterManager] Spawning ${this.options.totalClusters} Clusters with ${this.options.totalShards} Shards.`);
         const listOfShardsForCluster = shardingUtils_1.ShardingUtils.chunkArray(this.options.shardList || [], this.options.shardsPerClusters || this.options.totalShards);
         if (listOfShardsForCluster.length !== this.options.totalClusters)
@@ -148,7 +148,7 @@ class ClusterManager extends events_1.default {
         this.promise.nonces.clear();
         let s = 0;
         let i = 0;
-        this._debug('[ClusterManager] Respawning all clusters.');
+        this._debug("[ClusterManager] Respawning all clusters.");
         const promises = [];
         const listOfShardsForCluster = shardingUtils_1.ShardingUtils.chunkArray(this.options.shardList || [], this.options.shardsPerClusters || this.options.totalShards);
         for (const cluster of this.clusters.values()) {
@@ -167,7 +167,7 @@ class ClusterManager extends events_1.default {
         let error;
         // Manager is not allowed to crash.
         try {
-            result = await eval(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`);
+            result = await eval(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`);
         }
         catch (err) {
             error = err;
@@ -177,54 +177,54 @@ class ClusterManager extends events_1.default {
     // Evaluates a script on all clusters, or a given cluster, in the context of the Clients.
     async broadcastEval(script, options) {
         if (this.clusters.size === 0)
-            return Promise.reject(new Error('CLUSTERING_NO_CLUSTERS | No clusters have been spawned.'));
+            return Promise.reject(new Error("CLUSTERING_NO_CLUSTERS | No clusters have been spawned."));
         if ((options?.cluster !== undefined || options?.shard !== undefined) && options?.guildId !== undefined)
-            return Promise.reject(new Error('CLUSTERING_INVALID_OPTION | Cannot use both guildId and cluster/shard options.'));
+            return Promise.reject(new Error("CLUSTERING_INVALID_OPTION | Cannot use both guildId and cluster/shard options."));
         if (options?.cluster !== undefined) {
             const clusterIds = Array.isArray(options.cluster) ? options.cluster : [options.cluster];
             if (clusterIds.some((c) => c < 0))
-                return Promise.reject(new RangeError('CLUSTER_ID_OUT_OF_RANGE | Cluster Ids must be greater than or equal to 0.'));
+                return Promise.reject(new RangeError("CLUSTER_ID_OUT_OF_RANGE | Cluster Ids must be greater than or equal to 0."));
         }
         if (options?.guildId)
             options.cluster = shardingUtils_1.ShardingUtils.clusterIdForGuildId(options.guildId, this.options.totalShards, this.options.totalClusters);
         if (options?.shard !== undefined) {
             const shardIds = Array.isArray(options.shard) ? options.shard : [options.shard];
             if (shardIds.some((s) => s < 0))
-                return Promise.reject(new RangeError('SHARD_ID_OUT_OF_RANGE | Shard Ids must be greater than or equal to 0.'));
+                return Promise.reject(new RangeError("SHARD_ID_OUT_OF_RANGE | Shard Ids must be greater than or equal to 0."));
             const clusterIds = new Set();
             for (const cluster of this.clusters.values()) {
                 if (cluster.shardList.some((shard) => shardIds.includes(shard)))
                     clusterIds.add(cluster.id);
             }
             if (clusterIds.size === 0)
-                return Promise.reject(new Error('CLUSTERING_CLUSTER_NOT_FOUND | No clusters found for the given shard Ids.'));
+                return Promise.reject(new Error("CLUSTERING_CLUSTER_NOT_FOUND | No clusters found for the given shard Ids."));
             else if (clusterIds.size === 1)
                 options.cluster = clusterIds.values().next().value;
             else
                 options.cluster = Array.from(clusterIds);
         }
         const promises = [];
-        if (typeof options?.cluster === 'number') {
+        if (typeof options?.cluster === "number") {
             const cluster = this.clusters.get(options.cluster);
             if (!cluster)
-                return Promise.reject(new Error('CLUSTERING_CLUSTER_NOT_FOUND | No cluster was found with the given Id.'));
-            promises.push(cluster.evalOnClient(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`));
+                return Promise.reject(new Error("CLUSTERING_CLUSTER_NOT_FOUND | No cluster was found with the given Id."));
+            promises.push(cluster.evalOnClient(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`));
         }
         else if (Array.isArray(options?.cluster)) {
             const clusters = Array.from(this.clusters.values()).filter((c) => options?.cluster?.includes(c.id));
             if (clusters.length === 0)
-                return Promise.reject(new Error('CLUSTERING_CLUSTER_NOT_FOUND | No clusters were found with the given Ids.'));
+                return Promise.reject(new Error("CLUSTERING_CLUSTER_NOT_FOUND | No clusters were found with the given Ids."));
             for (const cluster of clusters) {
-                promises.push(cluster.evalOnClient(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`));
+                promises.push(cluster.evalOnClient(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`));
             }
         }
         else {
             for (const cluster of this.clusters.values()) {
-                promises.push(cluster.evalOnClient(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`));
+                promises.push(cluster.evalOnClient(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`));
             }
         }
         if (options?.useAllSettled) {
-            const results = (await Promise.allSettled(promises)).filter((r) => r.status === 'fulfilled');
+            const results = (await Promise.allSettled(promises)).filter((r) => r.status === "fulfilled");
             return results.map((r) => r.value);
         }
         else {
@@ -234,32 +234,32 @@ class ClusterManager extends events_1.default {
     // Runs a method with given arguments on a given Cluster's Client.
     async evalOnClusterClient(cluster, script, options) {
         if (this.clusters.size === 0)
-            return Promise.reject(new Error('CLUSTERING_NO_CLUSTERS | No clusters have been spawned.'));
-        if (typeof cluster !== 'number' || cluster < 0)
-            return Promise.reject(new RangeError('CLUSTER_ID_OUT_OF_RANGE | Cluster Ids must be greater than or equal to 0.'));
+            return Promise.reject(new Error("CLUSTERING_NO_CLUSTERS | No clusters have been spawned."));
+        if (typeof cluster !== "number" || cluster < 0)
+            return Promise.reject(new RangeError("CLUSTER_ID_OUT_OF_RANGE | Cluster Ids must be greater than or equal to 0."));
         const cl = this.clusters.get(cluster);
         if (!cl)
-            return Promise.reject(new Error('CLUSTERING_CLUSTER_NOT_FOUND | Cluster with id ' + cluster + ' was not found.'));
-        return cl.evalOnClient(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`);
+            return Promise.reject(new Error("CLUSTERING_CLUSTER_NOT_FOUND | Cluster with id " + cluster + " was not found."));
+        return cl.evalOnClient(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`);
     }
     // Runs a method with given arguments on a given Cluster's process.
     async evalOnCluster(cluster, script, options) {
         if (this.clusters.size === 0)
-            return Promise.reject(new Error('CLUSTERING_NO_CLUSTERS | No clusters have been spawned.'));
-        if (typeof cluster !== 'number' || cluster < 0)
-            return Promise.reject(new RangeError('CLUSTER_ID_OUT_OF_RANGE | Cluster Ids must be greater than or equal to 0.'));
+            return Promise.reject(new Error("CLUSTERING_NO_CLUSTERS | No clusters have been spawned."));
+        if (typeof cluster !== "number" || cluster < 0)
+            return Promise.reject(new RangeError("CLUSTER_ID_OUT_OF_RANGE | Cluster Ids must be greater than or equal to 0."));
         const cl = this.clusters.get(cluster);
         if (!cl)
-            return Promise.reject(new Error('CLUSTERING_CLUSTER_NOT_FOUND | Cluster with id ' + cluster + ' was not found.'));
-        return cl.eval(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`);
+            return Promise.reject(new Error("CLUSTERING_CLUSTER_NOT_FOUND | Cluster with id " + cluster + " was not found."));
+        return cl.eval(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`);
     }
     // Runs a method with given arguments on a given Cluster's process and Guild.
     async evalOnGuild(guildId, script, options) {
         if (this.clusters.size === 0)
-            return Promise.reject(new Error('CLUSTERING_NO_CLUSTERS | No clusters have been spawned.'));
-        if (typeof guildId !== 'string')
-            return Promise.reject(new TypeError('CLUSTERING_GUILD_ID_INVALID | Guild Ids must be a string.'));
-        return this.broadcastEval(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''}, this?.guilds?.cache?.get('${guildId}'))`, {
+            return Promise.reject(new Error("CLUSTERING_NO_CLUSTERS | No clusters have been spawned."));
+        if (typeof guildId !== "string")
+            return Promise.reject(new TypeError("CLUSTERING_GUILD_ID_INVALID | Guild Ids must be a string."));
+        return this.broadcastEval(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""}, this?.guilds?.cache?.get('${guildId}'))`, {
             ...options, guildId,
         }).then((e) => e?.find((r) => r !== undefined));
     }
@@ -269,13 +269,13 @@ class ClusterManager extends events_1.default {
         if (!recluster)
             this.clusters.set(id, cluster);
         // Emitted upon creating a cluster.
-        this.emit('clusterCreate', cluster);
+        this.emit("clusterCreate", cluster);
         this.heartbeat.getClusterStats(id);
         return cluster;
     }
     // Triggers a maintenance mode for all clusters.
     triggerMaintenance(reason) {
-        this._debug('[ClusterManager] Triggering maintenance mode for all clusters.');
+        this._debug("[ClusterManager] Triggering maintenance mode for all clusters.");
         this.maintenance = reason;
         for (const cluster of this.clusters.values()) {
             cluster.triggerMaintenance(reason);
@@ -283,7 +283,7 @@ class ClusterManager extends events_1.default {
     }
     // Logs out the Debug Messages.
     _debug(message) {
-        this.emit('debug', message);
+        this.emit("debug", message);
         return message;
     }
 }

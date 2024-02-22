@@ -1,6 +1,6 @@
-import { Serializable, SerializableInput } from '../types';
-import { ClusterManager } from '../core/clusterManager';
-import { ClusterClient } from '../core/clusterClient';
+import { Serializable, SerializableInput } from "../types";
+import { ClusterManager } from "../core/clusterManager";
+import { ClusterClient } from "../core/clusterClient";
 
 export type BrokerMessage = { _data: unknown; broker: string; };
 export type BrokerMessageHandler<T = unknown> = (message: T) => void;
@@ -40,7 +40,7 @@ export class IPCBrokerManager extends IPCBrokerAbstract {
 				}
 			} else {
 				const cluster = this.instance.clusters.get(clusterId);
-				if (!cluster) return Promise.reject(new Error('BROKER_INVALID_CLUSTER_ID | Invalid cluster id provided.'));
+				if (!cluster) return Promise.reject(new Error("BROKER_INVALID_CLUSTER_ID | Invalid cluster id provided."));
 
 				return cluster.thread?.send({
 					_data: message,

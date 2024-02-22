@@ -14,15 +14,15 @@ class ClusterHandler {
         switch (message._type) {
             case types_1.MessageTypes.ClientReady: {
                 if (this.cluster.ready)
-                    throw new Error('Cluster already ready, if autoLogin is enabled, check if you are not using .login() in your code.');
+                    throw new Error("Cluster already ready, if autoLogin is enabled, check if you are not using .login() in your code.");
                 this.cluster.ready = true;
                 // Emitted upon the cluster's ready event.
-                this.cluster.emit('ready', this.cluster);
+                this.cluster.emit("ready", this.cluster);
                 this.cluster.manager._debug(`[Cluster ${this.cluster.id}] Cluster is ready.`);
                 if (this.cluster.manager.clusters.size === this.cluster.manager.options.totalClusters) {
                     this.cluster.manager.ready = true;
-                    this.cluster.manager.emit('ready', this.cluster.manager);
-                    this.cluster.manager._debug('All clusters are ready.');
+                    this.cluster.manager.emit("ready", this.cluster.manager);
+                    this.cluster.manager._debug("All clusters are ready.");
                 }
                 break;
             }
@@ -117,19 +117,19 @@ class ClusterClientHandler {
                 const { script } = message.data;
                 try {
                     if (!script)
-                        throw new Error('Eval Script not provided.');
+                        throw new Error("Eval Script not provided.");
                     const result = await this.clusterClient.evalOnClient(script);
-                    this.clusterClient._respond('evalResult', {
+                    this.clusterClient._respond("evalResult", {
                         _type: types_1.MessageTypes.ClientEvalResponse,
                         _nonce: message._nonce,
                         data: shardingUtils_1.ShardingUtils.isSerializable(result) ? result : {
-                            ...shardingUtils_1.ShardingUtils.makePlainError(new Error('Evaluated script returned an unserializable value.')),
-                            script: script?.replace(/(\n|\r|\t)/g, '').replace(/( )+/g, ' ').replace(/(\/\/.*)/g, ''),
+                            ...shardingUtils_1.ShardingUtils.makePlainError(new Error("Evaluated script returned an unserializable value.")),
+                            script: script?.replace(/(\n|\r|\t)/g, "").replace(/( )+/g, " ").replace(/(\/\/.*)/g, ""),
                         },
                     });
                 }
                 catch (err) {
-                    this.clusterClient._respond('error', {
+                    this.clusterClient._respond("error", {
                         _type: types_1.MessageTypes.ClientEvalResponseError,
                         _nonce: message._nonce,
                         data: shardingUtils_1.ShardingUtils.makePlainError(err),
@@ -146,16 +146,16 @@ class ClusterClientHandler {
                 break;
             }
             case types_1.MessageTypes.ClientMaintenanceDisable: {
-                this.clusterClient.maintenance = '';
-                this.clusterClient.emit('ready', this.clusterClient);
+                this.clusterClient.maintenance = "";
+                this.clusterClient.emit("ready", this.clusterClient);
                 break;
             }
             case types_1.MessageTypes.ClientMaintenanceEnable: {
-                this.clusterClient.maintenance = message.data || '';
+                this.clusterClient.maintenance = message.data || "";
                 break;
             }
             case types_1.MessageTypes.Heartbeat: {
-                this.clusterClient._respond('heartbeat', { _type: types_1.MessageTypes.HeartbeatAck });
+                this.clusterClient._respond("heartbeat", { _type: types_1.MessageTypes.HeartbeatAck });
                 break;
             }
         }

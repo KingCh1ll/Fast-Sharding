@@ -1,5 +1,5 @@
-import { ShardingUtils } from '../other/shardingUtils';
-import { QueueOptions } from '../types';
+import { ShardingUtils } from "../other/shardingUtils";
+import { QueueOptions } from "../types";
 
 export interface QueueItem {
     run(...args: unknown[]): Promise<unknown>;
@@ -16,7 +16,7 @@ export class Queue {
 
 	// Starts the queue and run's the item functions.
 	public async start(): Promise<Queue> {
-		if (this.options.mode !== 'auto') {
+		if (this.options.mode !== "auto") {
 			return new Promise((resolve) => {
 				const interval = setInterval(() => {
 					if (this.queue.length === 0) {
@@ -27,9 +27,7 @@ export class Queue {
 			});
 		}
 
-		const length = this.queue.length;
-
-		for (let i = 0; i < length; i++) {
+		for (let i = 0; i < this.queue.length; i++) {
 			if (!this.queue[0]) continue;
 			const timeout = this.queue[0].timeout;
 			await this.next(); await ShardingUtils.delayFor(timeout);

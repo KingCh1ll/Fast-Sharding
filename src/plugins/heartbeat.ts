@@ -1,6 +1,6 @@
-import { ClusterManager } from '../core/clusterManager';
-import { HeartbeatData, MessageTypes } from '../types';
-import { BaseMessage } from '../other/message';
+import { ClusterManager } from "../core/clusterManager";
+import { HeartbeatData, MessageTypes } from "../types";
+import { BaseMessage } from "../other/message";
 
 export class HeartbeatManager {
 	private readonly interval: NodeJS.Timeout;
@@ -12,7 +12,7 @@ export class HeartbeatManager {
 			for (const cluster of this.manager.clusters.values()) {
 				if (!cluster.ready) continue; cluster._sendInstance({
 					_type: MessageTypes.Heartbeat,
-				} as BaseMessage<'heartbeat'>)?.catch(() => null);
+				} as BaseMessage<"heartbeat">)?.catch(() => null);
 			}
 		}, this.manager.options.heartbeat.interval || 30000); // 30 seconds
 	}

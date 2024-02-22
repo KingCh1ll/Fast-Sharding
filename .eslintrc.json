@@ -29,7 +29,7 @@
         "consistent-return": "off",
         "quotes": [
             "error",
-            "single",
+            "double",
             {
                 "avoidEscape": true
             }

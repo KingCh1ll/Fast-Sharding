@@ -1,4 +1,4 @@
-import { ValidIfSerializable } from '../types';
+import { ValidIfSerializable } from "../types";
 export declare class ShardingUtils {
     static generateNonce(): string;
     static chunkArray<T>(array: T[], chunkSize: number): T[][];

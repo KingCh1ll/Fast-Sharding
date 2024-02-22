@@ -25,7 +25,7 @@ class PromiseHandler {
             if (!timeout)
                 this.nonces.set(nonce, { resolve, reject });
             else
-                this.nonces.set(nonce, { resolve, reject, timeout: setTimeout(() => { this.nonces.delete(nonce); reject(new Error('Promise timed out.')); }, timeout) });
+                this.nonces.set(nonce, { resolve, reject, timeout: setTimeout(() => { this.nonces.delete(nonce); reject(new Error("Promise timed out.")); }, timeout) });
         });
     }
 }

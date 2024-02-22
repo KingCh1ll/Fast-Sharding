@@ -1,5 +1,5 @@
-import { ChildProcess, fork, ForkOptions } from 'child_process';
-import { SerializableInput, Serializable } from '../types';
+import { ChildProcess, fork, ForkOptions } from "child_process";
+import { SerializableInput, Serializable } from "../types";
 
 export interface ChildProcessOptions extends ForkOptions {
 	clusterData: NodeJS.ProcessEnv | undefined;
