@@ -1,8 +1,8 @@
-import { BaseMessage, DataType } from "../other/message";
-import { ClusterClient, ShardingClient } from "../core/clusterClient";
-import { Worker } from "../classes/worker";
-import { Cluster } from "../core/cluster";
-import { Child } from "../classes/child";
+import { BaseMessage, DataType } from '../other/message';
+import { ClusterClient, ShardingClient } from '../core/clusterClient';
+import { Worker } from '../classes/worker';
+import { Cluster } from '../core/cluster';
+import { Child } from '../classes/child';
 export declare class ClusterHandler {
     private cluster;
     private ipc;

@@ -1,14 +1,13 @@
-/// <reference types="node" />
-import { Awaitable, ClusterManagerCreateOptions, ClusterManagerEvents, ClusterManagerOptions, ClusteringMode, EvalOptions, Serialized, ValidIfSerializable, Serializable, SerializableInput } from "../types";
-import { HeartbeatManager } from "../plugins/heartbeat";
-import { ReClusterManager } from "../plugins/reCluster";
-import { IPCBrokerManager } from "../handlers/broker";
-import { PromiseHandler } from "../handlers/promise";
-import { ShardingClient } from "./clusterClient";
-import { Queue } from "../handlers/queue";
-import { Cluster } from "./cluster";
-import { Guild } from "discord.js";
-import EventEmitter from "events";
+import { Awaitable, ClusterManagerCreateOptions, ClusterManagerEvents, ClusterManagerOptions, ClusteringMode, EvalOptions, Serialized, ValidIfSerializable, Serializable, SerializableInput } from '../types';
+import { HeartbeatManager } from '../plugins/heartbeat';
+import { ReClusterManager } from '../plugins/reCluster';
+import { IPCBrokerManager } from '../handlers/broker';
+import { PromiseHandler } from '../handlers/promise';
+import { ShardingClient } from './clusterClient';
+import { Queue } from '../handlers/queue';
+import { Cluster } from './cluster';
+import { Guild } from 'discord.js';
+import EventEmitter from 'events';
 export declare class ClusterManager extends EventEmitter {
     file: string;
     ready: boolean;
@@ -36,8 +35,8 @@ export declare class ClusterManager extends EventEmitter {
         error: Error | undefined;
     }>;
     broadcastEval<T, P extends object, C = ShardingClient>(script: string | ((client: C, context: Serialized<P>) => Awaitable<T>), options?: EvalOptions<P>): Promise<ValidIfSerializable<T>[]>;
-    evalOnClusterClient<T, P extends object, C = ShardingClient>(cluster: number, script: string | ((client: C, context: Serialized<P>) => Awaitable<T>), options?: Exclude<EvalOptions<P>, "cluster">): Promise<ValidIfSerializable<T>>;
-    evalOnCluster<T, P extends object>(cluster: number, script: string | ((cluster: Cluster, context: Serialized<P>) => Awaitable<T>), options?: Exclude<EvalOptions<P>, "cluster">): Promise<ValidIfSerializable<T>>;
+    evalOnClusterClient<T, P extends object, C = ShardingClient>(cluster: number, script: string | ((client: C, context: Serialized<P>) => Awaitable<T>), options?: Exclude<EvalOptions<P>, 'cluster'>): Promise<ValidIfSerializable<T>>;
+    evalOnCluster<T, P extends object>(cluster: number, script: string | ((cluster: Cluster, context: Serialized<P>) => Awaitable<T>), options?: Exclude<EvalOptions<P>, 'cluster'>): Promise<ValidIfSerializable<T>>;
     evalOnGuild<T, P extends object, C = ShardingClient>(guildId: string, script: string | ((client: C, context: Serialized<P>, guild?: Guild) => Awaitable<T>), options?: {
         context?: P;
         timeout?: number;

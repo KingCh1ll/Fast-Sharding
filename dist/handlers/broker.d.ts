@@ -1,6 +1,6 @@
-import { Serializable, SerializableInput } from "../types";
-import { ClusterManager } from "../core/clusterManager";
-import { ClusterClient } from "../core/clusterClient";
+import { Serializable, SerializableInput } from '../types';
+import { ClusterManager } from '../core/clusterManager';
+import { ClusterClient } from '../core/clusterClient';
 export type BrokerMessage = {
     _data: unknown;
     broker: string;

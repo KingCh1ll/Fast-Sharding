@@ -1,4 +1,4 @@
-import { QueueOptions } from "../types";
+import { QueueOptions } from '../types';
 export interface QueueItem {
     run(...args: unknown[]): Promise<unknown>;
     args: unknown[];

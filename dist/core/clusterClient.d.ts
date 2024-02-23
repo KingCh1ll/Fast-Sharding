@@ -1,16 +1,15 @@
 /// <reference types="node" />
-/// <reference types="node" />
-import { ClusterClientEvents, EvalOptions, Serialized, Awaitable, ValidIfSerializable, SerializableInput } from "../types";
-import { BaseMessage, DataType } from "../other/message";
-import { ClientOptions, Client as DiscordClient, Guild, ClientEvents } from "discord.js";
-import { IPCBrokerClient } from "../handlers/broker";
-import { PromiseHandler } from "../handlers/promise";
-import { ClusterManager } from "./clusterManager";
-import { WorkerClient } from "../classes/worker";
-import { ChildClient } from "../classes/child";
-import { Serializable } from "child_process";
-import EventEmitter from "events";
-export type ClientEventsModifiable = Omit<ClientEvents, "ready"> & {
+import { ClusterClientEvents, EvalOptions, Serialized, Awaitable, ValidIfSerializable, SerializableInput } from '../types';
+import { BaseMessage, DataType } from '../other/message';
+import { ClientOptions, Client as DiscordClient, Guild, ClientEvents } from 'discord.js';
+import { IPCBrokerClient } from '../handlers/broker';
+import { PromiseHandler } from '../handlers/promise';
+import { ClusterManager } from './clusterManager';
+import { WorkerClient } from '../classes/worker';
+import { ChildClient } from '../classes/child';
+import { Serializable } from 'child_process';
+import EventEmitter from 'events';
+export type ClientEventsModifiable = Omit<ClientEvents, 'ready'> & {
     ready: [client: ShardingClient];
 };
 export declare class ShardingClient extends DiscordClient {

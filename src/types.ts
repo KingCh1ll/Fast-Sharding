@@ -1,49 +1,52 @@
-import { ChildProcess, Serializable as ChildSerializable } from "child_process";
-import { ClusterManager } from "./core/clusterManager";
-import { WorkerThreadOptions } from "./classes/worker";
-import { ChildProcessOptions } from "./classes/child";
-import { ClusterClient } from "./core/clusterClient";
-import { ProcessMessage } from "./other/message";
-import { Cluster } from "./core/cluster";
-import { Worker } from "worker_threads";
+import { ChildProcess, Serializable as ChildSerializable } from 'child_process';
+import { ClusterManager } from './core/clusterManager';
+import { WorkerThreadOptions } from './classes/worker';
+import { ChildProcessOptions } from './classes/child';
+import { ClusterClient } from './core/clusterClient';
+import { ProcessMessage } from './other/message';
+import { Cluster } from './core/cluster';
+import { Worker } from 'worker_threads';
 
-export const Endpoints = { botGateway: "/gateway/bot" };
 export const DefaultOptions = {
 	http: {
-		api: "https://discord.com/api",
-		version: "10",
-	}
+		api: 'https://discord.com/api',
+		version: '10',
+	},
+};
+
+export const Endpoints = {
+	botGateway: '/gateway/bot',
 };
 
 export enum MessageTypes {
-    "MissingType",
-    "CustomRequest",
-    "CustomMessage",
-    "CustomReply",
-    "Heartbeat",
-    "HeartbeatAck",
-    "ClientBroadcast",
-    "ClientBroadcastRequest",
-    "ClientBroadcastResponse",
-    "ClientBroadcastResponseError",
-    "ClientRespawn",
-    "ClientRespawnAll",
-    "ClientMaintenance",
-    "ClientMaintenanceEnable",
-    "ClientMaintenanceDisable",
-    "ClientMaintenanceAll",
-    "ClientSpawnNextCluster",
-    "ClientReady",
-    "ClientEvalRequest",
-    "ClientEvalResponse",
-    "ClientEvalResponseError",
-    "ClientManagerEvalRequest",
-    "ClientManagerEvalResponse",
-    "ClientManagerEvalResponseError",
+    'MissingType',
+    'CustomRequest',
+    'CustomMessage',
+    'CustomReply',
+    'Heartbeat',
+    'HeartbeatAck',
+    'ClientBroadcast',
+    'ClientBroadcastRequest',
+    'ClientBroadcastResponse',
+    'ClientBroadcastResponseError',
+    'ClientRespawn',
+    'ClientRespawnAll',
+    'ClientMaintenance',
+    'ClientMaintenanceEnable',
+    'ClientMaintenanceDisable',
+    'ClientMaintenanceAll',
+    'ClientSpawnNextCluster',
+    'ClientReady',
+    'ClientEvalRequest',
+    'ClientEvalResponse',
+    'ClientEvalResponseError',
+    'ClientManagerEvalRequest',
+    'ClientManagerEvalResponse',
+    'ClientManagerEvalResponseError',
 }
 
 export type Awaitable<T> = T | PromiseLike<T>;
-export type ClusteringMode = "worker" | "process";
+export type ClusteringMode = 'worker' | 'process';
 export type UnknownFunction = (...args: unknown[]) => unknown;
 export type HeartbeatData = { restarts: number; missedBeats: number; };
 export type RequiredProps<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
@@ -66,7 +69,7 @@ export interface ClusterManagerCreateOptions<T extends ClusteringMode> {
     queueOptions?: QueueOptions; // Control the Spawn Queue.
     spawnOptions?: ClusterSpawnOptions; // Options to pass to the spawn, respawn method.
     clusterData?: object; // Data, which is passed to the Cluster.
-    clusterOptions?: T extends "worker" ? WorkerThreadOptions : ChildProcessOptions; // Options, which is passed when forking a child or creating a thread.
+    clusterOptions?: T extends 'worker' ? WorkerThreadOptions : ChildProcessOptions; // Options, which is passed when forking a child or creating a thread.
 }
 
 export interface ClusterManagerOptions<T extends ClusteringMode> extends ClusterManagerCreateOptions<T> {
@@ -86,7 +89,7 @@ export interface ClusterClientData {
 	ClusterCount: number;
 	ClusterId: number;
 	ClusterManagerMode: ClusteringMode;
-	ClusterQueueMode?: "auto" | "manual";
+	ClusterQueueMode?: 'auto' | 'manual';
 	FirstShardId: number;
 	LastShardId: number;
 }
@@ -104,7 +107,7 @@ export interface ClusterHeartbeatOptions {
 }
 
 export interface QueueOptions {
-    mode?: "auto" | "manual"; // Whether the spawn queue be automatically managed.
+    mode?: 'auto' | 'manual'; // Whether the spawn queue be automatically managed.
     timeout?: number; // Time to wait until next item.
 }
 
@@ -124,7 +127,7 @@ export interface EvalOptions<T extends object = object> {
 }
 
 // ReCluster.
-export type ReClusterRestartMode = "gracefulSwitch" | "rolling";
+export type ReClusterRestartMode = 'gracefulSwitch' | 'rolling';
 
 export interface ReClusterOptions {
 	totalShards?: number; // The new totalShards of the bot.

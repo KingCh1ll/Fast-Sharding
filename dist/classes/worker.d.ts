@@ -1,7 +1,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
-import { Worker as WorkerThread, WorkerOptions, MessagePort } from "worker_threads";
-import { SerializableInput, Serializable } from "../types";
+import { Worker as WorkerThread, WorkerOptions, MessagePort } from 'worker_threads';
+import { SerializableInput, Serializable } from '../types';
 export interface WorkerThreadOptions extends WorkerOptions {
     clusterData: NodeJS.ProcessEnv | undefined;
 }

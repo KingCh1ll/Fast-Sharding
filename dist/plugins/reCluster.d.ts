@@ -1,5 +1,5 @@
-import { ClusterManager } from "../core/clusterManager";
-import { ReClusterOptions } from "../types";
+import { ClusterManager } from '../core/clusterManager';
+import { ReClusterOptions } from '../types';
 export declare class ReClusterManager {
     private readonly manager;
     private inProgress;

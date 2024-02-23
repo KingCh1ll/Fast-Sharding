@@ -51,15 +51,15 @@ class ClusterClient extends events_1.default {
         super();
         this.client = client;
         this.ready = false;
-        this.maintenance = "";
+        this.maintenance = '';
         this.broker = new broker_1.IPCBrokerClient(this);
-        this.process = (this.info.ClusterManagerMode === "process" ? new child_1.ChildClient() : this.info.ClusterManagerMode === "worker" ? new worker_1.WorkerClient() : null);
+        this.process = (this.info.ClusterManagerMode === 'process' ? new child_1.ChildClient() : this.info.ClusterManagerMode === 'worker' ? new worker_1.WorkerClient() : null);
         this.messageHandler = new message_2.ClusterClientHandler(this);
         // Handle messages from the ClusterManager.
-        this.process?.ipc?.on("message", this._handleMessage.bind(this));
+        this.process?.ipc?.on('message', this._handleMessage.bind(this));
         this.promise = new promise_1.PromiseHandler();
         if (client?.once)
-            client.once("ready", () => {
+            client.once('ready', () => {
                 setTimeout(() => this.triggerReady(), 1500); // Allow main listener to be called first.
             });
     }
@@ -81,14 +81,14 @@ class ClusterClient extends events_1.default {
     }
     // Sends a message to the Cluster as child. (Cluster, _handleMessage).
     send(message) {
-        this.emit("debug", `[IPC] [Child ${this.id}] Sending message to cluster.`);
+        this.emit('debug', `[IPC] [Child ${this.id}] Sending message to cluster.`);
         return this.process?.send({
             data: message,
             _type: types_1.MessageTypes.CustomMessage,
         });
     }
     broadcast(message, sendSelf = false) {
-        this.emit("debug", `[IPC] [Child ${this.id}] Sending message to cluster.`);
+        this.emit('debug', `[IPC] [Child ${this.id}] Sending message to cluster.`);
         return this.process?.send({
             data: {
                 message,
@@ -99,9 +99,9 @@ class ClusterClient extends events_1.default {
     }
     // This is not intended to be used by the user.
     _sendInstance(message) {
-        if (!("_type" in message) || !("data" in message))
-            return Promise.reject(new Error("CLUSTERING_INVALID_MESSAGE | Invalid message object." + JSON.stringify(message)));
-        this.emit("debug", `[IPC] [Child ${this.id}] Sending message to cluster.`);
+        if (!('_type' in message) || !('data' in message))
+            return Promise.reject(new Error('CLUSTERING_INVALID_MESSAGE | Invalid message object.' + JSON.stringify(message)));
+        this.emit('debug', `[IPC] [Child ${this.id}] Sending message to cluster.`);
         return this.process?.send(message);
     }
     async evalOnManager(script, options) {
@@ -109,7 +109,7 @@ class ClusterClient extends events_1.default {
         this.process?.send({
             data: {
                 options,
-                script: typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`,
+                script: typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`,
             },
             _nonce: nonce,
             _type: types_1.MessageTypes.ClientManagerEvalRequest,
@@ -121,7 +121,7 @@ class ClusterClient extends events_1.default {
         this.process?.send({
             data: {
                 options,
-                script: typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`,
+                script: typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`,
             },
             _nonce: nonce,
             _type: types_1.MessageTypes.ClientBroadcastRequest,
@@ -132,7 +132,7 @@ class ClusterClient extends events_1.default {
         const nonce = shardingUtils_1.ShardingUtils.generateNonce();
         this.process?.send({
             data: {
-                script: typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""}, this?.guilds?.cache?.get('${guildId}'))`,
+                script: typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''}, this?.guilds?.cache?.get('${guildId}'))`,
                 options: {
                     ...options,
                     guildId,
@@ -145,14 +145,14 @@ class ClusterClient extends events_1.default {
     }
     async evalOnClient(script, options) {
         if (this.client._eval)
-            return await this.client._eval(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`);
+            return await this.client._eval(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`);
         this.client._eval = function (_) { return eval(_); }.bind(this.client);
-        return await this.client._eval(typeof script === "string" ? script : `(${script})(this${options?.context ? ", " + JSON.stringify(options.context) : ""})`);
+        return await this.client._eval(typeof script === 'string' ? script : `(${script})(this${options?.context ? ', ' + JSON.stringify(options.context) : ''})`);
     }
     // Sends a Request to the ParentCluster and returns the reply.
     request(message, options = {}) {
         if (!this.process)
-            return Promise.reject(new Error("CLUSTERING_NO_PROCESS_TO_SEND_TO | No process to send the message to."));
+            return Promise.reject(new Error('CLUSTERING_NO_PROCESS_TO_SEND_TO | No process to send the message to.'));
         const nonce = shardingUtils_1.ShardingUtils.generateNonce();
         this.process?.send({
             data: message,
@@ -164,7 +164,7 @@ class ClusterClient extends events_1.default {
     // Requests a respawn of all clusters.
     respawnAll(options = {}) {
         if (!this.process)
-            return Promise.reject(new Error("CLUSTERING_NO_PROCESS_TO_SEND_TO | No process to send the message to."));
+            return Promise.reject(new Error('CLUSTERING_NO_PROCESS_TO_SEND_TO | No process to send the message to.'));
         return this.process?.send({
             data: options,
             _type: types_1.MessageTypes.ClientRespawnAll,
@@ -172,19 +172,19 @@ class ClusterClient extends events_1.default {
     }
     // Handles an IPC message.
     _handleMessage(message) {
-        if (!message || "_data" in message)
+        if (!message || '_data' in message)
             return this.broker.handleMessage(message);
         // Debug.
-        this.emit("debug", `[IPC] [Child ${this.id}] Received message from cluster.`);
+        this.emit('debug', `[IPC] [Child ${this.id}] Received message from cluster.`);
         this.messageHandler?.handleMessage(message);
         // Emitted upon receiving a message from the child process/worker.
         if ([types_1.MessageTypes.CustomMessage, types_1.MessageTypes.CustomRequest].includes(message._type)) {
-            this.emit("message", new message_1.ProcessMessage(this, message));
+            this.emit('message', new message_1.ProcessMessage(this, message));
         }
     }
     // Sends a message to the master process, emitting an error from the client upon failure.
     _respond(type, message) {
-        this.process?.send(message)?.catch((err) => this.client.emit("error", err));
+        this.process?.send(message)?.catch((err) => this.client.emit('error', err));
     }
     // Triggers the ready event.
     triggerReady() {
@@ -192,7 +192,7 @@ class ClusterClient extends events_1.default {
         this.process?.send({
             _type: types_1.MessageTypes.ClientReady,
         });
-        this.emit("ready", this);
+        this.emit('ready', this);
         return this.ready;
     }
     // Whether the cluster should opt in maintenance when a reason was provided or opt-out when no reason was provided.
@@ -206,8 +206,8 @@ class ClusterClient extends events_1.default {
     }
     // Manually spawn the next cluster, when queue mode is on 'manual'.
     spawnNextCluster() {
-        if (this.info.ClusterQueueMode === "auto")
-            throw new Error("Next Cluster can just be spawned when the queue is not on auto mode.");
+        if (this.info.ClusterQueueMode === 'auto')
+            throw new Error('Next Cluster can just be spawned when the queue is not on auto mode.');
         return this.process?.send({
             _type: types_1.MessageTypes.ClientSpawnNextCluster,
         });

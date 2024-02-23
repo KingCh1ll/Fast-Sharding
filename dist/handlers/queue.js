@@ -11,7 +11,7 @@ class Queue {
     }
     // Starts the queue and run's the item functions.
     async start() {
-        if (this.options.mode !== "auto") {
+        if (this.options.mode !== 'auto') {
             return new Promise((resolve) => {
                 const interval = setInterval(() => {
                     if (this.queue.length === 0) {
@@ -21,7 +21,8 @@ class Queue {
                 }, 200);
             });
         }
-        for (let i = 0; i < this.queue.length; i++) {
+        const length = this.queue.length;
+        for (let i = 0; i < length; i++) {
             if (!this.queue[0])
                 continue;
             const timeout = this.queue[0].timeout;

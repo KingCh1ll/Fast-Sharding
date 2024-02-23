@@ -1,5 +1,5 @@
-import { ClusterManager } from "../core/clusterManager";
-import { HeartbeatData } from "../types";
+import { ClusterManager } from '../core/clusterManager';
+import { HeartbeatData } from '../types';
 export declare class HeartbeatManager {
     private readonly manager;
     private readonly interval;
